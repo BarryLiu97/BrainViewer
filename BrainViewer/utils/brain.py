@@ -10,7 +10,7 @@ import numpy as np
 import pyvista as pv
 from pyvistaqt import QtInteractor
 
-from utils.surface import read_fs_surface, create_chs_sphere, create_roi_surface
+from utils.surface import read_fs_surface, create_roi_surface
 from utils.config import color, brain_kwargs, text_kwargs, roi_kwargs
 
 
@@ -21,8 +21,7 @@ class Brain(QtInteractor):
         # for this widget would be added to a Layout
         # it needs a parent, no change of this!
         super(Brain, self).__init__(parent)
-        # self.background_color = '#cccccc'
-        self.background_color = 'k'
+        self.background_color = 'w'
         self.enable_depth_peeling()
         self.enable_anti_aliasing()
         self.line_smoothing =True

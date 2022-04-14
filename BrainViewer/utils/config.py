@@ -12,7 +12,7 @@ color = ("#FF0000", "#EB8E55", "#CD853F", "#1E90FF", "#228B22",
          "#40E0D0", "#FF00FF", "#FFA500", "#8B4513", "#DC143C")
 
 brain_kwargs = dict(
-    color='w', style='surface',
+    color=(0.9, 0.9, 0.9), style='surface',
     opacity=0.1, lighting=True, ambient=0.4225,
     specular=0.3, specular_power=20, diffuse=0.5,
     line_width=10., smooth_shading=True, reset_camera=True

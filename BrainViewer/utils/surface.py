@@ -26,8 +26,7 @@ def check_hemi(hemi):
         print(hemi)
 
 def read_fs_surface(surf_path):
-    surf = pathlib.Path(surf_path).suffix
-
+    # surf = pathlib.Path(surf_path).suffix
     print(f'Loading surface files from {surf_path}')
     coords, faces = nib.freesurfer.read_geometry(surf_path)
 
@@ -35,24 +34,13 @@ def read_fs_surface(surf_path):
     faces = np.c_[face_nums, faces].astype(np.int32)
     return coords, faces
 
-def create_chs_sphere(ch_coords, radius=1.):
-    sphere = []
-    print("Creating Channels' sphere")
-    for ch_coord in ch_coords:
-        sphere.append(pv.Sphere(radius=radius, center=ch_coord))
-
-    return sphere
-
-def create_roi_surface(subject, subjects_dir, aseg, rois):
+def create_roi_surface(aseg_path, rois):
     from utils.freesurfer import read_freesurfer_lut
 
-    aseg_file = aseg + '.mgz'
-    aseg_path = op.join(subjects_dir, subject, 'mri', aseg_file)
-
+    print(f'loading {aseg_path}')
     aseg_mgz = nib.load(aseg_path)
     aseg_data = np.asarray(aseg_mgz.dataobj)
     vox_mri_t = aseg_mgz.header.get_vox2ras_tkr()
-    print(f'loading segment file from {aseg_file}')
 
     if 'vep' not in aseg:
         lut_name = 'utils/FreeSurferColorLUT.txt'
