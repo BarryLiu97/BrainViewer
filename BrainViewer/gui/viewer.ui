@@ -117,10 +117,10 @@
               <number>10</number>
              </property>
              <property name="value">
-              <number>10</number>
+              <number>30</number>
              </property>
              <property name="sliderPosition">
-              <number>10</number>
+              <number>30</number>
              </property>
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
@@ -253,7 +253,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QSlider" name="_roi_transparency_slider_2">
+            <widget class="QSlider" name="_roi_transparency_slider">
              <property name="minimumSize">
               <size>
                <width>250</width>
@@ -287,10 +287,10 @@
               <number>10</number>
              </property>
              <property name="value">
-              <number>10</number>
+              <number>60</number>
              </property>
              <property name="sliderPosition">
-              <number>10</number>
+              <number>60</number>
              </property>
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
@@ -508,7 +508,7 @@
   </action>
   <action name="_load_surface_action">
    <property name="text">
-    <string>Load surface ...</string>
+    <string>Load surface</string>
    </property>
   </action>
   <action name="_load_volume_action">
@@ -531,7 +531,7 @@
   <customwidget>
    <class>Brain</class>
    <extends>QOpenGLWidget</extends>
-   <header>viz.brain</header>
+   <header>utils.brain</header>
   </customwidget>
  </customwidgets>
  <resources/>
