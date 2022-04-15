@@ -29,7 +29,10 @@ class Brain(QtInteractor):
 
         self.brain_surface = {}
         self.brain_actors = {}
+        self.roi_actors = {}
         self.text_actors = {}
+        self.viz_rois = []
+        self.nviz_rois = []
         self.roi_color = {}
 
     def add_brain(self, surf_path, opacity):
@@ -67,18 +70,26 @@ class Brain(QtInteractor):
             if nviz_hemi[0] in self.brain_actors:
                 self.brain_actors[nviz_hemi[0]].SetVisibility(False)
 
-    def add_rois(self, subject, subjects_dir, rois, aseg):
-        roi_mesh_color = create_roi_surface(subject, subjects_dir, aseg, rois)
-        self.roi_color = {roi: roi_mesh_color[roi][1] for roi in roi_mesh_color}
-        if roi_mesh_color is not None:
-            for idx, roi in enumerate(roi_mesh_color):
-                polydata = roi_mesh_color[roi][0]
-                roi_color = roi_mesh_color[roi][1]
-                self.roi_actors[roi] = self.add_mesh(polydata, name=roi, label=roi,
-                                                     color=roi_color, **roi_kwargs)
+    def add_rois(self, mgz, roi, lut_path):
+        roi_mesh, roi_color = create_roi_surface(mgz, roi, lut_path)
+        if roi_mesh is not None:
+            print(f'Add ROI {roi}')
+            self.roi_actors[roi] = self.add_mesh(roi_mesh, name=roi, label=roi,
+                                                 color=roi_color, **roi_kwargs)
+            self.roi_color[roi] = roi_color
 
-    def enable_rois_viz(self, roi, viz):
-        self.roi_actors[roi].SetVisibility(viz)
+    def enable_rois_viz(self, mgz, roi, lut_path, viz):
+        if roi not in self.roi_actors and viz:
+            self.add_rois(mgz, roi, lut_path)
+            self.viz_rois.append(roi)
+            self.add_rois_text(self.viz_rois)
+        elif roi in self.roi_actors:
+            self.roi_actors[roi].SetVisibility(viz)
+            if viz:
+                self.viz_rois.append(roi)
+            else:
+                self.viz_rois.remove(roi)
+            self.add_rois_text(self.viz_rois)
 
     def add_rois_text(self, rois):
         if len(self.text_actors):

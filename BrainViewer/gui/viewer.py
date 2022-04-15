@@ -41,6 +41,7 @@ class BrainViewer(QMainWindow, Ui_MainWindow):
         self.rh_rois = []
         self.other_rois = []
 
+        self.lut_path = default_lut
         _, self.ids_atlas, self.roi_color = read_freesurfer_lut(default_lut)
 
         QShortcut(QKeySequence(self.tr("F10")), self, self.showNormal)
@@ -75,6 +76,9 @@ class BrainViewer(QMainWindow, Ui_MainWindow):
         # self._rois_gp.clicked.connect(self._enable_roi)
         self._roi_hemi_cbx.currentTextChanged.connect(self._set_roi_hemi)
         self._roi_transparency_slider.valueChanged.connect(self._set_roi_transp)
+        self._lh_info_list.itemClicked.connect(self._enable_lh_roi)
+        self._rh_info_list.itemClicked.connect(self._enable_rh_roi)
+        self._other_info_list.itemClicked.connect(self._enable_other_roi)
 
     def _load_surface(self):
         surf_paths, _ = QFileDialog.getOpenFileNames(self, 'Surface',
@@ -174,6 +178,27 @@ class BrainViewer(QMainWindow, Ui_MainWindow):
     def _set_roi_transp(self, transp):
         transp = float(transp) / 100
         self._plotter.set_roi_opacity(transp)
+
+    def _enable_lh_roi(self, item):
+        roi = item.text()
+        viz = not (item.checkState() == Qt.Checked)
+        check_state = Qt.Checked if viz else Qt.Unchecked
+        item.setCheckState(check_state)
+        self._plotter.enable_rois_viz(self.volume, roi, self.lut_path, viz)
+
+    def _enable_rh_roi(self, item):
+        roi = item.text()
+        viz = not (item.checkState() == Qt.Checked)
+        check_state = Qt.Checked if viz else Qt.Unchecked
+        item.setCheckState(check_state)
+        self._plotter.enable_rois_viz(self.volume, roi, self.lut_path, viz)
+
+    def _enable_other_roi(self, item):
+        roi = item.text()
+        viz = not (item.checkState() == Qt.Checked)
+        check_state = Qt.Checked if viz else Qt.Unchecked
+        item.setCheckState(check_state)
+        self._plotter.enable_rois_viz(self.volume, roi, self.lut_path, viz)
 
     def _set_background_color(self):
         color = QColorDialog.getColor()

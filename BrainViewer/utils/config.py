@@ -24,7 +24,7 @@ text_kwargs = dict(
 )
 
 roi_kwargs = dict(
-    style='surface', opacity=0.6, render_points_as_spheres=True,
+    style='surface', opacity=1, render_points_as_spheres=True,
     lighting=True, smooth_shading=True, line_width=1.,
     reset_camera=False
 )
