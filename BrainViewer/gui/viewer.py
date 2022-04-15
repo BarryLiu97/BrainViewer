@@ -239,8 +239,3 @@ class BrainViewer(QMainWindow, Ui_MainWindow):
     def _set_bottom_view(self):
         view = view_dict['bottom']
         self._plotter.view_vector(view[0], view[1])
-
-    def _show_tooltip(self, i, j):
-        item = self._info_table.item(i, j).text()
-        if len(item) > 39:
-            QToolTip.showText(QCursor.pos(), item)
