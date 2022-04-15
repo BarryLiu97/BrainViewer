@@ -5,13 +5,23 @@
 @Author  ：Barry
 @Date    ：2022/4/14 2:33 
 """
+import numpy as np
+import nibabel as nib
 
-from PyQt5.QtWidgets import QMainWindow, QShortcut, QMessageBox, QDesktopWidget, QFileDialog, QColorDialog
-from PyQt5.QtGui import QKeySequence
+from mne.label import _read_annot
+from PyQt5.QtWidgets import QMainWindow, QShortcut, QMessageBox, QDesktopWidget, QFileDialog, \
+                            QColorDialog, QListWidgetItem, QCheckBox
+from PyQt5.QtGui import QKeySequence, QBrush, QColor
+from PyQt5.QtCore import Qt
 
 from gui.viewer_ui import Ui_MainWindow
 from utils.surface import check_hemi
 from utils.config import view_dict
+from utils.freesurfer import read_freesurfer_lut
+
+
+# default_lut = 'utils/VepFreeSurferColorLut.txt'
+default_lut = 'utils/FreeSurferColorLUT.txt'
 
 
 class BrainViewer(QMainWindow, Ui_MainWindow):
@@ -22,10 +32,20 @@ class BrainViewer(QMainWindow, Ui_MainWindow):
         self.setWindowTitle('BrainViewer')
         self.slot_funcs()
 
+        self.lut_path = None
+        self.ids_atlas = None
+        self.roi_color = None
+        self.volume = None
+        self.ids = None
+        self.lh_rois = []
+        self.rh_rois = []
+        self.other_rois = []
+
+        _, self.ids_atlas, self.roi_color = read_freesurfer_lut(default_lut)
+
         QShortcut(QKeySequence(self.tr("F10")), self, self.showNormal)
         QShortcut(QKeySequence(self.tr("F11")), self, self.showMaximized)
         QShortcut(QKeySequence(self.tr("Ctrl+Q")), self, self.close)
-        QShortcut(QKeySequence(self.tr("Ctrl+O")), self, self._load_surface)
 
     def center_win(self):
         qr = self.frameGeometry()
@@ -35,7 +55,8 @@ class BrainViewer(QMainWindow, Ui_MainWindow):
 
     def slot_funcs(self):
         self._load_surface_action.triggered.connect(self._load_surface)
-        # self._load_volume_action.triggered.connect(self._load_volume)
+        self._load_volume_action.triggered.connect(self._load_volume)
+        self._load_lut_action.triggered.connect(self._load_lut)
 
         self._bg_color_action.triggered.connect(self._set_background_color)
         self._brain_color_action.triggered.connect(self._set_brain_color)
@@ -52,8 +73,8 @@ class BrainViewer(QMainWindow, Ui_MainWindow):
         self._brain_transparency_slider.valueChanged.connect(self._set_brain_transp)
 
         # self._rois_gp.clicked.connect(self._enable_roi)
-        # self._roi_hemi_cbx.currentTextChanged.connect(self._set_roi_hemi)
-        # self._roi_transparency_slider.valueChanged.connect(self._set_roi_transp)
+        self._roi_hemi_cbx.currentTextChanged.connect(self._set_roi_hemi)
+        self._roi_transparency_slider.valueChanged.connect(self._set_roi_transp)
 
     def _load_surface(self):
         surf_paths, _ = QFileDialog.getOpenFileNames(self, 'Surface',
@@ -65,6 +86,71 @@ class BrainViewer(QMainWindow, Ui_MainWindow):
                     self._plotter.add_brain(surf_path, opacity)
                 else:
                     QMessageBox.warning(self, 'Surface', 'Only *h.pial or *h.white is supported')
+
+    def _load_volume(self):
+        mgz_path, _ = QFileDialog.getOpenFileName(self, 'MRI',  filter="MRI (*.nii *.nii.gz *.mgz)")
+        if len(mgz_path):
+            self.volume = nib.load(mgz_path)
+            self.ids = np.unique(np.asarray(self.volume.dataobj))
+            self.update_info()
+
+    def _load_lut(self):
+        self.lut_path, _ = QFileDialog.getOpenFileName(self, 'ColorLut',
+                                                         filter="ColorLut (*.txt)")
+        lut_path = self.lut_path
+        if len(lut_path):
+            _, self.ids_atlas, self.roi_color = read_freesurfer_lut(lut_path)
+            print(f'Load Color Lut from {lut_path}')
+            self.update_info()
+
+    def update_info(self):
+        if self.ids_atlas is None:
+            return
+        if self.ids is None:
+            return
+        self.lh_rois = []
+        self.rh_rois = []
+        self.other_rois = []
+        try:
+            rois = [self.ids_atlas[index] for index in self.ids]
+        except:
+            QMessageBox.warning(self, 'Color Lut', 'Color Lut Mismatch!')
+            return
+        for roi in rois:
+            hemi = check_hemi(roi)
+            if hemi == 'lh':
+                self.lh_rois.append(roi)
+            elif hemi == 'rh':
+                self.rh_rois.append(roi)
+            else:
+                self.other_rois.append(roi)
+        self._update_list()
+
+    def _update_list(self):
+        if len(self.lh_rois):
+            self._lh_info_list.clear()
+            for roi in self.lh_rois:
+                roi_item = QListWidgetItem(roi)
+                color = self.roi_color[roi]
+                roi_item.setCheckState(Qt.Unchecked)
+                roi_item.setBackground(QBrush(QColor(color[0], color[1], color[2])))
+                self._lh_info_list.addItem(roi_item)
+        if len(self.rh_rois):
+            self._rh_info_list.clear()
+            for roi in self.rh_rois:
+                roi_item = QListWidgetItem(roi)
+                color = self.roi_color[roi]
+                roi_item.setCheckState(Qt.Unchecked)
+                roi_item.setBackground(QBrush(QColor(color[0], color[1], color[2])))
+                self._rh_info_list.addItem(roi_item)
+        if len(self.other_rois):
+            self._other_info_list.clear()
+            for roi in self.other_rois:
+                roi_item = QListWidgetItem(roi)
+                color = self.roi_color[roi]
+                roi_item.setCheckState(Qt.Unchecked)
+                roi_item.setBackground(QBrush(QColor(color[0], color[1], color[2])))
+                self._other_info_list.addItem(roi_item)
 
     def _enable_brain(self):
         hemi = check_hemi(self._brain_hemi_cbx.currentText())
@@ -78,6 +164,16 @@ class BrainViewer(QMainWindow, Ui_MainWindow):
     def _set_brain_transp(self, transp):
         transp = float(transp) / 100
         self._plotter.set_brain_opacity(transp)
+
+    def _set_roi_hemi(self):
+        hemi = check_hemi(self._roi_hemi_cbx.currentText())
+        hemi_index = {'lh': 0, 'rh': 1, 'other': 2}
+        index = hemi_index[hemi]
+        self._roi_stack.setCurrentIndex(index)
+
+    def _set_roi_transp(self, transp):
+        transp = float(transp) / 100
+        self._plotter.set_roi_opacity(transp)
 
     def _set_background_color(self):
         color = QColorDialog.getColor()

@@ -74,11 +74,11 @@ class Brain(QtInteractor):
             for idx, roi in enumerate(roi_mesh_color):
                 polydata = roi_mesh_color[roi][0]
                 roi_color = roi_mesh_color[roi][1]
-                self.actors[roi] = self.add_mesh(polydata, name=roi, label=roi,
-                                                 color=roi_color, **roi_kwargs)
+                self.roi_actors[roi] = self.add_mesh(polydata, name=roi, label=roi,
+                                                     color=roi_color, **roi_kwargs)
 
     def enable_rois_viz(self, roi, viz):
-        self.actors[roi].SetVisibility(viz)
+        self.roi_actors[roi].SetVisibility(viz)
 
     def add_rois_text(self, rois):
         if len(self.text_actors):
@@ -91,5 +91,8 @@ class Brain(QtInteractor):
             roi_color = self.roi_color[roi]
             self.text_actors[f'{roi} text'] = self.add_text(text=roi, position=text_pos,
                                                             font_size=font_size, color=roi_color)
+
+    def set_roi_opacity(self, opacity):
+        [self.roi_actors[roi].GetProperty().SetOpacity(opacity) for roi in self.roi_actors]
 
 

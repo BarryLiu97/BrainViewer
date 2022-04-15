@@ -38,7 +38,7 @@
         </property>
         <property name="maximumSize">
          <size>
-          <width>397</width>
+          <width>419</width>
           <height>98</height>
          </size>
         </property>
@@ -208,7 +208,7 @@
         </property>
         <property name="maximumSize">
          <size>
-          <width>397</width>
+          <width>419</width>
           <height>16777215</height>
          </size>
         </property>
@@ -356,32 +356,161 @@
                <string>Right</string>
               </property>
              </item>
+             <item>
+              <property name="text">
+               <string>Other</string>
+              </property>
+             </item>
             </widget>
            </item>
           </layout>
          </item>
          <item>
-          <widget class="QTableWidget" name="_info_table">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>0</height>
-            </size>
+          <widget class="QStackedWidget" name="_roi_stack">
+           <property name="lineWidth">
+            <number>0</number>
            </property>
-           <property name="maximumSize">
-            <size>
-             <width>400</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>9</pointsize>
-            </font>
-           </property>
-           <property name="wordWrap">
-            <bool>false</bool>
-           </property>
+           <widget class="QWidget" name="_lh_page">
+            <layout class="QVBoxLayout" name="verticalLayout_4">
+             <property name="spacing">
+              <number>0</number>
+             </property>
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QListWidget" name="_lh_info_list">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>640</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>400</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
+               </property>
+               <property name="autoFillBackground">
+                <bool>true</bool>
+               </property>
+               <property name="alternatingRowColors">
+                <bool>false</bool>
+               </property>
+               <property name="selectionMode">
+                <enum>QAbstractItemView::MultiSelection</enum>
+               </property>
+               <property name="sortingEnabled">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QWidget" name="_rh_page">
+            <layout class="QVBoxLayout" name="verticalLayout_5">
+             <property name="spacing">
+              <number>0</number>
+             </property>
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QListWidget" name="_rh_info_list">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>640</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>400</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
+               </property>
+               <property name="autoFillBackground">
+                <bool>true</bool>
+               </property>
+               <property name="alternatingRowColors">
+                <bool>false</bool>
+               </property>
+               <property name="selectionMode">
+                <enum>QAbstractItemView::MultiSelection</enum>
+               </property>
+               <property name="sortingEnabled">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QWidget" name="_other_page">
+            <layout class="QVBoxLayout" name="verticalLayout_6">
+             <item>
+              <widget class="QListWidget" name="_other_info_list">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>640</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>400</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
+               </property>
+               <property name="autoFillBackground">
+                <bool>true</bool>
+               </property>
+               <property name="alternatingRowColors">
+                <bool>false</bool>
+               </property>
+               <property name="selectionMode">
+                <enum>QAbstractItemView::MultiSelection</enum>
+               </property>
+               <property name="sortingEnabled">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
           </widget>
          </item>
         </layout>
@@ -416,6 +545,7 @@
     </property>
     <addaction name="_load_surface_action"/>
     <addaction name="_load_volume_action"/>
+    <addaction name="_load_lut_action"/>
     <addaction name="separator"/>
     <addaction name="_export_action"/>
    </widget>
@@ -510,10 +640,19 @@
    <property name="text">
     <string>Load surface</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>false</bool>
+   </property>
   </action>
   <action name="_load_volume_action">
    <property name="text">
     <string>Load volumes</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
    </property>
   </action>
   <action name="action_PNG">
@@ -524,6 +663,14 @@
   <action name="_export_action">
    <property name="text">
     <string>Export</string>
+   </property>
+  </action>
+  <action name="_load_lut_action">
+   <property name="text">
+    <string>Load ColorLut</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
    </property>
   </action>
  </widget>

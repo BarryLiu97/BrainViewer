@@ -25,8 +25,9 @@ def read_freesurfer_lut(fname=None):
     names, ids = lut['name'], lut['id']
     colors = np.array([lut['R'], lut['G'], lut['B'], lut['A']], float).T
     atlas_ids = dict(zip(names, ids))
+    ids_atlas = dict(zip(ids, names))
     colors = dict(zip(names, colors))
-    return atlas_ids, colors
+    return atlas_ids, ids_atlas, colors
 
 
 def _get_lut(fname=None):

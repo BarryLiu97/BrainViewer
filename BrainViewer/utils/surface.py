@@ -23,7 +23,7 @@ def check_hemi(hemi):
     elif 'Right' in hemi or 'rh' in hemi:
         return 'rh'
     else:
-        print(hemi)
+        return 'other'
 
 def read_fs_surface(surf_path):
     # surf = pathlib.Path(surf_path).suffix
