@@ -1,0 +1,7 @@
+mne
+nibabel
+numpy
+pandas
+PyQt5
+pyvista
+pyvistaqt
