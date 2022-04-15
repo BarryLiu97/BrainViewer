@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 """
-@Project ：iEEGTool 
+@Project ：BrainViewer
 @File    ：surface.py
 @Author  ：Barry
 @Date    ：2022/3/16 17:00 

@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 """
-@Project ：iEEGTool 
+@Project ：BrainViewer
 @File    ：freesurfer.py
 @Author  ：Barry
 @Date    ：2022/3/8 23:44 

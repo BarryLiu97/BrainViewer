@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 """
-@Project ：EpiLock 
+@Project ：BrainViewer
 @File    ：_mne_marching_cubes.py
 @Author  ：Barry
 @Date    ：2021/11/16 22:24 
