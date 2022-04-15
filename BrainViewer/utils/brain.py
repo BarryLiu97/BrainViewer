@@ -32,7 +32,6 @@ class Brain(QtInteractor):
         self.roi_actors = {}
         self.text_actors = {}
         self.viz_rois = []
-        self.nviz_rois = []
         self.roi_color = {}
 
     def add_brain(self, surf_path, opacity):
