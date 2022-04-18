@@ -8,7 +8,6 @@
 import numpy as np
 import nibabel as nib
 
-from mne.label import _read_annot
 from PyQt5.QtWidgets import QMainWindow, QShortcut, QMessageBox, QDesktopWidget, QFileDialog, \
                             QColorDialog, QListWidgetItem, QCheckBox
 from PyQt5.QtGui import QKeySequence, QBrush, QColor
