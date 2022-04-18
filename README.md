@@ -2,7 +2,7 @@
 
 ![BrainViewer](BrainViewer/fig/main_window.png)  
 
-> *A Python-based 3D Viewer for Visualizing ROIs using FreeSurfer reconstruction*
+> *A Python-based 3D Viewer for Visualizing ROIs using FreeSurfer Reconstruction*
 
 ## 👁️‍🗨️ Overview
 
