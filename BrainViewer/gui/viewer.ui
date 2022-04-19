@@ -574,8 +574,15 @@
     <addaction name="_Color_menu"/>
     <addaction name="_View_menu"/>
    </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="_github_action"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
+   <addaction name="menuHelp"/>
   </widget>
   <action name="actionScreenshot">
    <property name="icon">
@@ -671,6 +678,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+L</string>
+   </property>
+  </action>
+  <action name="_github_action">
+   <property name="text">
+    <string>Github</string>
    </property>
   </action>
  </widget>

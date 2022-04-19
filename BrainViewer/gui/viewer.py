@@ -10,8 +10,8 @@ import nibabel as nib
 
 from PyQt5.QtWidgets import QMainWindow, QShortcut, QMessageBox, QDesktopWidget, QFileDialog, \
                             QColorDialog, QListWidgetItem, QCheckBox
-from PyQt5.QtGui import QKeySequence, QBrush, QColor
-from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QKeySequence, QBrush, QColor, QDesktopServices
+from PyQt5.QtCore import Qt, QUrl
 
 from gui.viewer_ui import Ui_MainWindow
 from utils.surface import check_hemi
@@ -67,6 +67,8 @@ class BrainViewer(QMainWindow, Ui_MainWindow):
         self._right_action.triggered.connect(self._set_right_view)
         self._top_action.triggered.connect(self._set_top_view)
         self._bottom_action.triggered.connect(self._set_bottom_view)
+
+        self._github_action.triggered.connect(self._open_github)
 
         self._brain_gp.clicked.connect(self._enable_brain)
         self._brain_hemi_cbx.currentTextChanged.connect(self._set_brain_hemi)
@@ -238,3 +240,8 @@ class BrainViewer(QMainWindow, Ui_MainWindow):
     def _set_bottom_view(self):
         view = view_dict['bottom']
         self._plotter.view_vector(view[0], view[1])
+
+    @staticmethod
+    def _open_github():
+        url = QUrl('https://github.com/BarryLiu97/BrainViewer')
+        QDesktopServices.openUrl(url)

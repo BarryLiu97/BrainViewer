@@ -204,6 +204,8 @@ class Ui_MainWindow(object):
         self._View_menu.setObjectName("_View_menu")
         self._Color_menu = QtWidgets.QMenu(self.menuEdit)
         self._Color_menu.setObjectName("_Color_menu")
+        self.menuHelp = QtWidgets.QMenu(self.menuBar)
+        self.menuHelp.setObjectName("menuHelp")
         MainWindow.setMenuBar(self.menuBar)
         self.actionScreenshot = QtWidgets.QAction(MainWindow)
         icon = QtGui.QIcon()
@@ -241,6 +243,8 @@ class Ui_MainWindow(object):
         self._export_action.setObjectName("_export_action")
         self._load_lut_action = QtWidgets.QAction(MainWindow)
         self._load_lut_action.setObjectName("_load_lut_action")
+        self._github_action = QtWidgets.QAction(MainWindow)
+        self._github_action.setObjectName("_github_action")
         self.menuFile.addAction(self._load_surface_action)
         self.menuFile.addAction(self._load_volume_action)
         self.menuFile.addAction(self._load_lut_action)
@@ -256,8 +260,10 @@ class Ui_MainWindow(object):
         self._Color_menu.addAction(self._brain_color_action)
         self.menuEdit.addAction(self._Color_menu.menuAction())
         self.menuEdit.addAction(self._View_menu.menuAction())
+        self.menuHelp.addAction(self._github_action)
         self.menuBar.addAction(self.menuFile.menuAction())
         self.menuBar.addAction(self.menuEdit.menuAction())
+        self.menuBar.addAction(self.menuHelp.menuAction())
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -284,6 +290,7 @@ class Ui_MainWindow(object):
         self.menuEdit.setTitle(_translate("MainWindow", "Edit"))
         self._View_menu.setTitle(_translate("MainWindow", "View"))
         self._Color_menu.setTitle(_translate("MainWindow", "Color"))
+        self.menuHelp.setTitle(_translate("MainWindow", "Help"))
         self.actionScreenshot.setText(_translate("MainWindow", "Screenshot"))
         self.actionBrain_Color.setText(_translate("MainWindow", "Brain Color"))
         self.actionBackground_Color.setText(_translate("MainWindow", "Background Color"))
@@ -303,6 +310,7 @@ class Ui_MainWindow(object):
         self._export_action.setText(_translate("MainWindow", "Export"))
         self._load_lut_action.setText(_translate("MainWindow", "Load ColorLut"))
         self._load_lut_action.setShortcut(_translate("MainWindow", "Ctrl+L"))
+        self._github_action.setText(_translate("MainWindow", "Github"))
 from utils.brain import Brain
 
 
