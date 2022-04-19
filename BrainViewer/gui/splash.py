@@ -15,12 +15,12 @@ class SplashPanel(QSplashScreen):
 
     def __init__(self):
         super(SplashPanel, self).__init__()
-        self.setFixedSize(400, 200)
+        self.setFixedSize(400, 195)
         message_font = QFont('微软雅黑')
         message_font.setBold(True)
         message_font.setPointSize(9)
         self.setFont(message_font)
-        pixmap = QPixmap("fig/LOGO.jpg").scaled(QSize(400, 200),
+        pixmap = QPixmap("fig/LOGO.jpg").scaled(QSize(400, 195),
                                                 Qt.KeepAspectRatio, Qt.SmoothTransformation)
         self.setPixmap(pixmap)
         self.center_win()
