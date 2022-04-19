@@ -5,16 +5,16 @@ block_cipher = None
 
 
 a = Analysis(
-    ['main.py'],
+    ['../main.py'],
     pathex=[],
     binaries=[],
     datas=[],
-    hiddenimports=['mne.report',
+    hiddenimports=[
 'vtkmodules', 'vtkmodules.all', 'vtkmodules.qt.QVTKRenderWindowInteractor',  'vtkmodules.util',  'vtkmodules.util.numpy_support',  'vtkmodules.numpy_interface.dataset_adapter'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
-    excludes=[],
+    excludes=['mne.report'],
     win_no_prefer_redirects=False,
     win_private_assemblies=False,
     cipher=block_cipher,
