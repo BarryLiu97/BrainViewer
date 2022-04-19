@@ -11,11 +11,22 @@ if __name__ == '__main__':
     from PyQt5.QtWidgets import QApplication
     from PyQt5.QtCore import Qt
     from gui.viewer import BrainViewer
+    from gui.splash import SplashPanel
 
-    QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
-    QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
+    # QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
+    # QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
+    # app = QApplication(sys.argv)
+    # viewer = BrainViewer()
+    # viewer.showMaximized()
+    # viewer.show()
+    # sys.exit(app.exec_())
+
     app = QApplication(sys.argv)
+    splash = SplashPanel()
+    app.processEvents()
     viewer = BrainViewer()
+    splash.finish(viewer)
+    splash.deleteLater()
     viewer.showMaximized()
     viewer.show()
     sys.exit(app.exec_())
