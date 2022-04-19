@@ -131,7 +131,6 @@ dmypy.json
 data/
 mri/
 surf/
-pack/
 build/
 dist/
 runtime/
