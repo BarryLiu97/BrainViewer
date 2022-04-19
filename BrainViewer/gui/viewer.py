@@ -10,7 +10,7 @@ import nibabel as nib
 
 from PyQt5.QtWidgets import QMainWindow, QShortcut, QMessageBox, QDesktopWidget, QFileDialog, \
                             QColorDialog, QListWidgetItem, QCheckBox
-from PyQt5.QtGui import QKeySequence, QBrush, QColor, QDesktopServices
+from PyQt5.QtGui import QKeySequence, QBrush, QColor, QDesktopServices, QIcon
 from PyQt5.QtCore import Qt, QUrl
 
 from gui.viewer_ui import Ui_MainWindow
@@ -29,6 +29,7 @@ class BrainViewer(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.center_win()
         self.setWindowTitle('BrainViewer')
+        self.setWindowIcon(QIcon('fig/brain.ico'))
         self.slot_funcs()
 
         self.lut_path = None
@@ -74,7 +75,7 @@ class BrainViewer(QMainWindow, Ui_MainWindow):
         self._brain_hemi_cbx.currentTextChanged.connect(self._set_brain_hemi)
         self._brain_transparency_slider.valueChanged.connect(self._set_brain_transp)
 
-        # self._rois_gp.clicked.connect(self._enable_roi)
+        self._rois_gp.clicked.connect(self._enable_roi)
         self._roi_hemi_cbx.currentTextChanged.connect(self._set_roi_hemi)
         self._roi_transparency_slider.valueChanged.connect(self._set_roi_transp)
         self._lh_info_list.itemClicked.connect(self._enable_lh_roi)
@@ -171,6 +172,10 @@ class BrainViewer(QMainWindow, Ui_MainWindow):
     def _set_brain_transp(self, transp):
         transp = float(transp) / 100
         self._plotter.set_brain_opacity(transp)
+
+    def _enable_roi(self):
+        viz = self._rois_gp.isChecked()
+        self._plotter.disable_rois_viz(viz)
 
     def _set_roi_hemi(self):
         hemi = check_hemi(self._roi_hemi_cbx.currentText())

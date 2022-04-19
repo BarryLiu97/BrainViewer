@@ -90,6 +90,10 @@ class Brain(QtInteractor):
                 self.viz_rois.remove(roi)
             self.add_rois_text(self.viz_rois)
 
+    def disable_rois_viz(self, viz):
+        [self.roi_actors[roi].SetVisibility(viz) for roi in self.roi_actors]
+        [self.text_actors[roi].SetVisibility(viz) for roi in self.text_actors]
+
     def add_rois_text(self, rois):
         if len(self.text_actors):
             [self.remove_actor(self.text_actors[roi]) for roi in self.text_actors]
