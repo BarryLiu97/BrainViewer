@@ -97,6 +97,8 @@ class BrainViewer(QMainWindow, Ui_MainWindow):
         if len(mgz_path):
             self.volume = nib.load(mgz_path)
             self.ids = np.unique(np.asarray(self.volume.dataobj))
+            self._plotter.clean_rois()
+
             self.update_info()
 
     def _load_lut(self):

@@ -105,4 +105,11 @@ class Brain(QtInteractor):
     def set_roi_opacity(self, opacity):
         [self.roi_actors[roi].GetProperty().SetOpacity(opacity) for roi in self.roi_actors]
 
+    def clean_rois(self):
+        [self.remove_actor(self.roi_actors[roi]) for roi in self.roi_actors]
+        [self.remove_actor(self.text_actors[roi]) for roi in self.text_actors]
+        self.text_actors = {}
+        self.roi_actors = {}
+        self.viz_rois = []
+
 
