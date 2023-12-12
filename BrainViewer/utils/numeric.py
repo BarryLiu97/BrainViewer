@@ -1,9 +1,9 @@
 # -*- coding: UTF-8 -*-
 """
-@Project ：BrainViewer 
-@File    ：numeric.py
-@Author  ：Barry
-@Date    ：2022/4/14 3:04 
+@Project : BrainViewer 
+@File    : splash.py
+@Author  : zheng.liu
+@Date    : 2022/4/14 3:04 
 """
 import numpy as np
 

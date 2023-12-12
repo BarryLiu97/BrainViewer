@@ -1,14 +1,17 @@
 # -*- coding: UTF-8 -*-
 """
-@Project ：BrainViewer
-@File    ：freesurfer.py
-@Author  ：Barry
-@Date    ：2022/3/8 23:44 
+@Project : BrainViewer 
+@File    : splash.py
+@Author  : zheng.liu
+@Date    : 2022/3/8 23:44 
 """
-import numpy as np
-import os.path as op
 
-def read_freesurfer_lut(fname=None):
+import numpy as np
+
+from .config import DEFAULT_COLOR_LUT
+
+
+def read_freesurfer_lut(fname=''):
     """Read a Freesurfer-formatted LUT.
     Parameters
     ----------
@@ -21,20 +24,20 @@ def read_freesurfer_lut(fname=None):
     colors : dict
         Mapping from label names to colors.
     """
+    fname = fname if fname else DEFAULT_COLOR_LUT
+    print(f'Color Lut: {fname}')
     lut = _get_lut(fname)
     names, ids = lut['name'], lut['id']
-    colors = np.array([lut['R'], lut['G'], lut['B'], lut['A']], float).T
+    colors = np.array([lut['R'], lut['G'], lut['B'], lut['A']], int).T
     atlas_ids = dict(zip(names, ids))
     ids_atlas = dict(zip(ids, names))
     colors = dict(zip(names, colors))
     return atlas_ids, ids_atlas, colors
 
 
-def _get_lut(fname=None):
+def _get_lut(fname=''):
     """Get a FreeSurfer LUT."""
-    if fname is None:
-        fname = op.join(op.dirname(__file__), 'data',
-                        'FreeSurferColorLUT.txt')
+    fname = fname if fname else DEFAULT_COLOR_LUT
     dtype = [('id', '<i8'), ('name', 'U'),
              ('R', '<i8'), ('G', '<i8'), ('B', '<i8'), ('A', '<i8')]
     lut = {d[0]: list() for d in dtype}

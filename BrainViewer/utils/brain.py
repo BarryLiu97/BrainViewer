@@ -5,13 +5,22 @@
 @Author  ：Barry
 @Date    ：2022/3/16 15:27 
 """
-import os.path as op
+import matplotlib.pyplot as plt
 import numpy as np
 import pyvista as pv
 from pyvistaqt import QtInteractor
 
-from utils.surface import read_fs_surface, create_roi_surface
-from utils.config import color, brain_kwargs, text_kwargs, roi_kwargs
+from .config import brain_kwargs, roi_kwargs
+from .surface import read_fs_surface, create_roi_surface
+
+
+def coeff_to_color(cmap, coeff):
+    return cmap(coeff)
+
+
+def normalize_factors(factors):
+    factors = np.array(factors)
+    return list((factors - factors.min()) / (factors.max() - factors.min()))
 
 
 class Brain(QtInteractor):
@@ -24,11 +33,13 @@ class Brain(QtInteractor):
         self.background_color = 'w'
         self.enable_depth_peeling()
         self.enable_anti_aliasing()
-        self.line_smoothing =True
-        self.point_smoothing =True
+        self.line_smoothing = True
+        self.point_smoothing = True
+        self.cmap = plt.get_cmap('hot')
 
         self.brain_surface = {}
         self.brain_actors = {}
+        self.electrodes_actor = None
         self.roi_actors = {}
         self.text_actors = {}
         self.viz_rois = []
@@ -94,14 +105,14 @@ class Brain(QtInteractor):
         [self.roi_actors[roi].SetVisibility(viz) for roi in self.roi_actors]
         [self.text_actors[roi].SetVisibility(viz) for roi in self.text_actors]
 
-    def add_rois_text(self, rois):
+    def add_rois_text(self, rois, stride_factor=30):
         if len(self.text_actors):
             [self.remove_actor(self.text_actors[roi]) for roi in self.text_actors]
             self.text_actors = {}
         start_pos = np.array([5, 10])
         font_size = 9 if len(rois) < 15 else 6
         for index, roi in enumerate(rois):
-            text_pos = start_pos + np.array([0, index*25])
+            text_pos = start_pos + np.array([0, index * stride_factor])
             roi_color = self.roi_color[roi]
             self.text_actors[f'{roi} text'] = self.add_text(text=roi, position=text_pos,
                                                             font_size=font_size, color=roi_color)
@@ -116,4 +127,24 @@ class Brain(QtInteractor):
         self.roi_actors = {}
         self.viz_rois = []
 
+    def add_electrodes(self, ch_coords, factors, cmap=None):
+        if cmap:
+            self.cmap = plt.get_cmap(cmap)
+        print(rf'Using cmap: {self.cmap.name}')
+        self.electrodes_actor = self.add_mesh(
+            np.array(ch_coords),
+            scalars=factors,
+            render_points_as_spheres=True,
+            point_size=30,
+            cmap=self.cmap,
+            show_scalar_bar=True,
+        )
 
+    def clear_electrodes(self):
+        if self.electrodes_actor:
+            self.remove_actor(self.electrodes_actor)
+            self.electrodes_actor = None
+
+    def enable_electrodes_viz(self, viz):
+        if self.electrodes_actor:
+            self.electrodes_actor.SetVisibility(viz)

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1300</width>
-    <height>900</height>
+    <height>981</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -18,7 +18,7 @@
   </property>
   <property name="font">
    <font>
-    <family>Ubuntu</family>
+    <family>Segoe UI</family>
    </font>
   </property>
   <property name="windowTitle">
@@ -147,13 +147,13 @@
             <widget class="QLabel" name="_brain_hemi_lb">
              <property name="minimumSize">
               <size>
-               <width>113</width>
+               <width>144</width>
                <height>25</height>
               </size>
              </property>
              <property name="maximumSize">
               <size>
-               <width>1999999</width>
+               <width>144</width>
                <height>25</height>
               </size>
              </property>
@@ -191,6 +191,205 @@
                <string>Right</string>
               </property>
              </item>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="_electrodes_gp">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>50</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>419</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="title">
+         <string>Electrodes</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_7">
+         <property name="leftMargin">
+          <number>8</number>
+         </property>
+         <property name="topMargin">
+          <number>8</number>
+         </property>
+         <property name="rightMargin">
+          <number>8</number>
+         </property>
+         <property name="bottomMargin">
+          <number>8</number>
+         </property>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_7">
+           <item>
+            <widget class="QLabel" name="_cmap_lb">
+             <property name="minimumSize">
+              <size>
+               <width>144</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>144</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>ColorMap</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="_cmap_cbx">
+             <property name="minimumSize">
+              <size>
+               <width>250</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>250</width>
+               <height>25</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_8">
+           <item>
+            <widget class="QLabel" name="_threshold_lb">
+             <property name="minimumSize">
+              <size>
+               <width>144</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>144</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Threshold</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="_threshold_min_le">
+             <property name="minimumSize">
+              <size>
+               <width>65</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>65</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="focusPolicy">
+              <enum>Qt::StrongFocus</enum>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+             <property name="placeholderText">
+              <string>0 ~ 1</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label">
+             <property name="minimumSize">
+              <size>
+               <width>5</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>5</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string> - </string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="_threshold_max_le">
+             <property name="minimumSize">
+              <size>
+               <width>65</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>65</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="focusPolicy">
+              <enum>Qt::StrongFocus</enum>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+             <property name="placeholderText">
+              <string>0 ~ 1</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="Line" name="line">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="_normalize_cbx">
+             <property name="maximumSize">
+              <size>
+               <width>200</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="toolTip">
+              <string>Normalization after thresholding to -1 ~ 1</string>
+             </property>
+             <property name="text">
+              <string>Normalize</string>
+             </property>
             </widget>
            </item>
           </layout>
@@ -237,13 +436,13 @@
             <widget class="QLabel" name="_roi_transparency_lb">
              <property name="minimumSize">
               <size>
-               <width>75</width>
+               <width>144</width>
                <height>25</height>
               </size>
              </property>
              <property name="maximumSize">
               <size>
-               <width>16777215</width>
+               <width>144</width>
                <height>25</height>
               </size>
              </property>
@@ -317,13 +516,13 @@
             <widget class="QLabel" name="_roi_hemi_lb">
              <property name="minimumSize">
               <size>
-               <width>75</width>
+               <width>144</width>
                <height>25</height>
               </size>
              </property>
              <property name="maximumSize">
               <size>
-               <width>16777215</width>
+               <width>144</width>
                <height>25</height>
               </size>
              </property>
@@ -403,6 +602,7 @@
                </property>
                <property name="font">
                 <font>
+                 <family>Ubuntu</family>
                  <pointsize>11</pointsize>
                 </font>
                </property>
@@ -455,6 +655,7 @@
                </property>
                <property name="font">
                 <font>
+                 <family>Ubuntu</family>
                  <pointsize>11</pointsize>
                 </font>
                </property>
@@ -492,6 +693,7 @@
                </property>
                <property name="font">
                 <font>
+                 <family>Ubuntu</family>
                  <pointsize>11</pointsize>
                 </font>
                </property>
@@ -519,12 +721,21 @@
      </layout>
     </item>
     <item>
-     <widget class="Brain" name="_plotter">
+     <widget class="Brain" name="_plotter" native="true">
       <property name="minimumSize">
        <size>
         <width>850</width>
         <height>800</height>
        </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="inputMethodHints">
+       <set>Qt::ImhDigitsOnly|Qt::ImhPreferNumbers</set>
       </property>
      </widget>
     </item>
@@ -536,7 +747,7 @@
      <x>0</x>
      <y>0</y>
      <width>1300</width>
-     <height>26</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -544,10 +755,11 @@
      <string>File</string>
     </property>
     <addaction name="_load_surface_action"/>
+    <addaction name="_load_electrodes_action"/>
     <addaction name="_load_volume_action"/>
     <addaction name="_load_lut_action"/>
     <addaction name="separator"/>
-    <addaction name="_export_action"/>
+    <addaction name="_screenshot_action"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -645,7 +857,7 @@
   </action>
   <action name="_load_surface_action">
    <property name="text">
-    <string>Load surface</string>
+    <string>Load Surface</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
@@ -656,7 +868,7 @@
   </action>
   <action name="_load_volume_action">
    <property name="text">
-    <string>Load volumes</string>
+    <string>Load Volumes</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+P</string>
@@ -667,9 +879,9 @@
     <string>.PNG</string>
    </property>
   </action>
-  <action name="_export_action">
+  <action name="_screenshot_action">
    <property name="text">
-    <string>Export</string>
+    <string>Screenshot</string>
    </property>
   </action>
   <action name="_load_lut_action">
@@ -685,12 +897,21 @@
     <string>Github</string>
    </property>
   </action>
+  <action name="_load_electrodes_action">
+   <property name="text">
+    <string>Load Electrodes</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
    <class>Brain</class>
-   <extends>QOpenGLWidget</extends>
-   <header>utils.brain</header>
+   <extends>QWidget</extends>
+   <header location="global">..utils.brain</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

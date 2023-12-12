@@ -1,10 +1,11 @@
 # -*- coding: UTF-8 -*-
 """
-@Project ：EpiLock
-@File    ：_config.py
-@Author  ：Barry
-@Date    ：2021/11/15 21:20
+@Project : BrainViewer 
+@File    : splash.py
+@Author  : zheng.liu
+@Date    : 2021/11/15 21:20
 """
+from pathlib import Path
 
 color = ("#FF0000", "#EB8E55", "#CD853F", "#1E90FF", "#228B22",
          "#FF4500", "#0000FF", "#00FFFF", "#8A2BE2", "#D2691E",
@@ -34,3 +35,6 @@ view_dict = {
     'left': [(-1, 0, 0), (0, 0, 1)], 'right': [(1, 0, 0), (0, 0, 1)],
     'top': [(0, 0, 1), (0, 1, 0)], 'bottom': [(0, 0, -1), (0, 1, 0)],
         }
+
+DEFAULT_PATH = str((Path(__file__).parent / '../').absolute())
+DEFAULT_COLOR_LUT = str((Path(__file__).parent / 'FreeSurferColorLUT.txt').absolute())

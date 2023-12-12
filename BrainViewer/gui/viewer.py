@@ -5,22 +5,23 @@
 @Author  ：Barry
 @Date    ：2022/4/14 2:33 
 """
-import numpy as np
+from pathlib import Path
+
 import nibabel as nib
-
-from PyQt5.QtWidgets import QMainWindow, QShortcut, QMessageBox, QDesktopWidget, QFileDialog, \
-                            QColorDialog, QListWidgetItem, QCheckBox
-from PyQt5.QtGui import QKeySequence, QBrush, QColor, QDesktopServices, QIcon
+import numpy as np
+import pandas as pd
 from PyQt5.QtCore import Qt, QUrl
+from PyQt5.QtGui import QKeySequence, QBrush, QColor, QDesktopServices, QIcon, QDoubleValidator
+from PyQt5.QtWidgets import QMainWindow, QShortcut, QMessageBox, QDesktopWidget, QFileDialog, \
+    QColorDialog, QListWidgetItem
+from matplotlib import colormaps as cmap
 
-from gui.viewer_ui import Ui_MainWindow
-from utils.surface import check_hemi
-from utils.config import view_dict
-from utils.freesurfer import read_freesurfer_lut
-
-
-# default_lut = 'utils/VepFreeSurferColorLut.txt'
-default_lut = 'utils/FreeSurferColorLUT.txt'
+from .viewer_ui import Ui_MainWindow
+from ..utils.config import DEFAULT_COLOR_LUT
+from ..utils.config import view_dict
+from ..utils.freesurfer import read_freesurfer_lut
+from ..utils.surface import check_hemi
+from ..utils.config import DEFAULT_PATH
 
 
 class BrainViewer(QMainWindow, Ui_MainWindow):
@@ -29,8 +30,12 @@ class BrainViewer(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.center_win()
         self.setWindowTitle('BrainViewer')
-        self.setWindowIcon(QIcon('fig/brain.ico'))
-        self.slot_funcs()
+        logo_path = Path(__file__).parent / '../fig/brain.ico'
+        self.setWindowIcon(QIcon(str(logo_path)))
+        validator = QDoubleValidator()
+        validator.setDecimals(2)
+        self._threshold_min_le.setValidator(validator)
+        self._threshold_max_le.setValidator(validator)
 
         self.lut_path = None
         self.ids_atlas = None
@@ -40,13 +45,20 @@ class BrainViewer(QMainWindow, Ui_MainWindow):
         self.lh_rois = []
         self.rh_rois = []
         self.other_rois = []
+        self._electrodes_df = pd.DataFrame()
+        self._factors = []
 
-        self.lut_path = default_lut
-        _, self.ids_atlas, self.roi_color = read_freesurfer_lut(default_lut)
+        # self.lut_path = default_lut
+        _, self.ids_atlas, self.roi_color = read_freesurfer_lut(DEFAULT_COLOR_LUT)
+
+        cmaps = list(cmap.keys())
+        cmaps.sort()
+        self._cmap_cbx.addItems(cmaps)
 
         QShortcut(QKeySequence(self.tr("F10")), self, self.showNormal)
         QShortcut(QKeySequence(self.tr("F11")), self, self.showMaximized)
         QShortcut(QKeySequence(self.tr("Ctrl+Q")), self, self.close)
+        self.slot_funcs()
 
     def center_win(self):
         qr = self.frameGeometry()
@@ -56,8 +68,10 @@ class BrainViewer(QMainWindow, Ui_MainWindow):
 
     def slot_funcs(self):
         self._load_surface_action.triggered.connect(self._load_surface)
+        self._load_electrodes_action.triggered.connect(self._load_electrodes)
         self._load_volume_action.triggered.connect(self._load_volume)
         self._load_lut_action.triggered.connect(self._load_lut)
+        self._screenshot_action.triggered.connect(self._screenshot)
 
         self._bg_color_action.triggered.connect(self._set_background_color)
         self._brain_color_action.triggered.connect(self._set_brain_color)
@@ -75,6 +89,12 @@ class BrainViewer(QMainWindow, Ui_MainWindow):
         self._brain_hemi_cbx.currentTextChanged.connect(self._set_brain_hemi)
         self._brain_transparency_slider.valueChanged.connect(self._set_brain_transp)
 
+        self._cmap_cbx.currentTextChanged.connect(self._update_cmap)
+        self._electrodes_gp.clicked.connect(self._enable_electrodes)
+        self._threshold_min_le.editingFinished.connect(self._update_electrodes)
+        self._threshold_max_le.editingFinished.connect(self._update_electrodes)
+        self._normalize_cbx.stateChanged.connect(self._update_electrodes)
+
         self._rois_gp.clicked.connect(self._enable_roi)
         self._roi_hemi_cbx.currentTextChanged.connect(self._set_roi_hemi)
         self._roi_transparency_slider.valueChanged.connect(self._set_roi_transp)
@@ -83,7 +103,7 @@ class BrainViewer(QMainWindow, Ui_MainWindow):
         self._other_info_list.itemClicked.connect(self._enable_other_roi)
 
     def _load_surface(self):
-        surf_paths, _ = QFileDialog.getOpenFileNames(self, 'Surface',
+        surf_paths, _ = QFileDialog.getOpenFileNames(self, 'Surface', DEFAULT_PATH,
                                                      filter="Surface (*.pial *.white)")
         if len(surf_paths):
             for surf_path in surf_paths:
@@ -93,21 +113,60 @@ class BrainViewer(QMainWindow, Ui_MainWindow):
                 else:
                     QMessageBox.warning(self, 'Surface', 'Only *h.pial or *h.white is supported')
 
+    def __parse_electrodes(self):
+        x = self._electrodes_df['x'].to_list()
+        y = self._electrodes_df['y'].to_list()
+        z = self._electrodes_df['z'].to_list()
+        coords = []
+        for index in range(len(x)):
+            coords.append((x[index], y[index], z[index]))
+
+        if 'factor' not in self._electrodes_df:
+            QMessageBox.critical(self, 'Electrodes', 'factor header not found, please check!')
+            factors = []
+        else:
+            factors = self._electrodes_df['factor'].to_list()
+        return coords, factors
+
+    def _update_electrodes(self):
+        if self._electrodes_df.empty:
+            return
+        coords, self._factors = self.__parse_electrodes()
+        if len(self._factors) == 0:
+            return
+        factors = self._update_threshold()
+        if self._normalize_cbx.isChecked():
+            factors = (factors - factors.min()) / (factors.max() - factors.min()) * 2 - 1
+        # import matplotlib.pyplot as plt
+        # plt.plot(factors)
+        # plt.show()
+        print('Update electrodes')
+        self._plotter.clear_electrodes()
+        print('Clearing electrodes')
+        self._plotter.add_electrodes(coords, factors, self._cmap_cbx.currentText())
+
+    def _load_electrodes(self):
+        electrode_path, _ = QFileDialog.getOpenFileName(self, 'Electrodes',
+                                                        filter="Electrodes (*.tsv)")
+        if len(electrode_path):
+            self._electrodes_df = pd.read_table(electrode_path)
+        self._update_electrodes()
+
     def _load_volume(self):
-        mgz_path, _ = QFileDialog.getOpenFileName(self, 'MRI',  filter="MRI (*.nii *.nii.gz *.mgz)")
+        mgz_path, _ = QFileDialog.getOpenFileName(self, 'MRI', filter="MRI (*.nii *.nii.gz *.mgz)")
         if len(mgz_path):
             self.volume = nib.load(mgz_path)
             self.ids = np.unique(np.asarray(self.volume.dataobj))
             self._plotter.clean_rois()
-
             self.update_info()
 
     def _load_lut(self):
         self.lut_path, _ = QFileDialog.getOpenFileName(self, 'ColorLut',
-                                                         filter="ColorLut (*.txt)")
+                                                       filter="ColorLut (*.txt)")
         lut_path = self.lut_path
         if len(lut_path):
             _, self.ids_atlas, self.roi_color = read_freesurfer_lut(lut_path)
+            self.roi_color = [int(color) for color in self.roi_color]
             print(f'Load Color Lut from {lut_path}')
             self.update_info()
 
@@ -141,7 +200,7 @@ class BrainViewer(QMainWindow, Ui_MainWindow):
                 roi_item = QListWidgetItem(roi)
                 color = self.roi_color[roi]
                 roi_item.setCheckState(Qt.Unchecked)
-                roi_item.setBackground(QBrush(QColor(color[0], color[1], color[2])))
+                roi_item.setBackground(QBrush(QColor(int(color[0]), int(color[1]), int(color[2]))))
                 self._lh_info_list.addItem(roi_item)
         if len(self.rh_rois):
             self._rh_info_list.clear()
@@ -172,6 +231,48 @@ class BrainViewer(QMainWindow, Ui_MainWindow):
     def _set_brain_transp(self, transp):
         transp = float(transp) / 100
         self._plotter.set_brain_opacity(transp)
+
+    def _update_cmap(self, item):
+        self._update_electrodes()
+
+    def _enable_electrodes(self):
+        viz = self._electrodes_gp.isChecked()
+        self._plotter.enable_electrodes_viz(viz)
+
+    def _update_threshold(self):
+        epslion = 1e-8
+
+        if not self._threshold_min_le.text():
+            self._threshold_min_le.setText('0')
+        if not self._threshold_max_le.text():
+            self._threshold_max_le.setText('1')
+
+        threshold_min_text = self._threshold_min_le.text()
+        threshold_max_text = self._threshold_max_le.text()
+        print(f'min: {threshold_min_text}')
+        print(f'max: {threshold_max_text}')
+        threshold_min = float(threshold_min_text)
+        threshold_max = float(threshold_max_text)
+
+        threshold_min = 0 if threshold_min < 0 else threshold_min
+        threshold_max = 1 if threshold_max > 1 else threshold_max
+
+        if threshold_max <= threshold_min:
+            QMessageBox.critical(self, 'Threshold', f'{threshold_max} is less than {threshold_min}, '
+                                                    f'max: {max(self._factors)}, min: {self._factors}, please check!')
+            self._threshold_min_le.setText('0')
+            self._threshold_max_le.setText('1')
+            return
+
+        self._threshold_min_le.setText(str(threshold_min))
+        self._threshold_max_le.setText(str(threshold_max))
+
+        # set all the elements < threshold to 0
+        factors = np.array(self._factors)
+
+        factors[factors - threshold_min < epslion] = 0
+        factors[factors - threshold_max > epslion] = 1
+        return factors
 
     def _enable_roi(self):
         viz = self._rois_gp.isChecked()
@@ -213,7 +314,7 @@ class BrainViewer(QMainWindow, Ui_MainWindow):
         if color.isValid():
             # 第四位为透明度 color必须在0-1之间
             color = color.getRgbF()[:-1]
-            print(f"change brain color to {color}")
+            print(f"Change brain color to {color}")
             self._plotter.set_background_color(color)
 
     def _set_brain_color(self):
@@ -221,7 +322,7 @@ class BrainViewer(QMainWindow, Ui_MainWindow):
         if color.isValid():
             # 第四位为透明度 color必须在0-1之间
             color = color.getRgbF()[:-1]
-            print(f"change brain color to {color}")
+            print(f"Change brain color to {color}")
             self._plotter.set_brain_color(color)
 
     def _set_front_view(self):
@@ -248,7 +349,12 @@ class BrainViewer(QMainWindow, Ui_MainWindow):
         view = view_dict['bottom']
         self._plotter.view_vector(view[0], view[1])
 
+    def _screenshot(self):
+        fname, _ = QFileDialog.getSaveFileName(self, 'Screenshot', filter="Screenshot (*..png)")
+        if len(fname):
+            self._plotter.screenshot(fname)
+
     @staticmethod
     def _open_github():
-        url = QUrl('https://github.com/BarryLiu97/BrainViewer')
+        url = QUrl('https://github.com/zhengliuer/BrainViewer')
         QDesktopServices.openUrl(url)

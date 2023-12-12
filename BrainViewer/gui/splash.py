@@ -5,28 +5,32 @@
 @Author  ：Barry
 @Date    ：2022/4/19 21:07 
 """
-import PyQt5
-from PyQt5.QtWidgets import QSplashScreen, QDesktopWidget
+
+import time
+from pathlib import Path
+
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QFont, QPixmap
-import time
+from PyQt5.QtWidgets import QSplashScreen, QDesktopWidget
+
 
 class SplashPanel(QSplashScreen):
 
     def __init__(self):
         super(SplashPanel, self).__init__()
         self.setFixedSize(400, 195)
-        message_font = QFont('微软雅黑')
-        message_font.setBold(True)
+        message_font = QFont('Segoe UI')
+        message_font.setWeight(QFont.Weight.DemiBold)
         message_font.setPointSize(9)
         self.setFont(message_font)
-        pixmap = QPixmap("fig/LOGO.jpg").scaled(QSize(400, 195),
+        logo_path = Path(__file__).parent / '../fig/LOGO.jpg'
+        pixmap = QPixmap(str(logo_path)).scaled(QSize(400, 195),
                                                 Qt.KeepAspectRatio, Qt.SmoothTransformation)
         self.setPixmap(pixmap)
         self.center_win()
         self.show()
         for i in range(1, 6):
-            self.showMessage(f"软件初始化{'.' * i}",
+            self.showMessage(f"Initializing{'.' * i}",
                              alignment=Qt.AlignBottom, color=Qt.black)
             time.sleep(0.5)
 
