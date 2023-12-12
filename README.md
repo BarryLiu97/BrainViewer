@@ -18,16 +18,11 @@ A Python-based 3D Viewer for viszalizing ROIs using the result of FreeSurfer rec
 ## 🖥️ Installation
 
 ```bash
-git clone https://github.com/BarryLiu97/BrainViewer.git
-conda create -n viewer python=3.8
-conda activate viewer 
-cd BrainViewer
-pip install -r requirements.txt
+pip install brainviewer
 ```
 
 ## 🗝️ Usage
 
 ```bash
-cd BrainViewer
-python main.py
+python -m brainviewer
 ```
